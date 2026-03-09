@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { documentAPI, blockchainAPI } from '../services/api';
-import toast from 'react-hot-toast';
 import NewUploadDocument from '../components/documents/NewUploadDocument';
 import NewVerifyDocument from '../components/documents/NewVerifyDocument';
 import NewBlockchainExplorer from '../components/blockchain/NewBlockchainExplorer';

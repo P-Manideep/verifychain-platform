@@ -31,7 +31,6 @@ app = FastAPI(
 )
 
 # CORS middleware
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -39,7 +38,8 @@ app.add_middleware(
         "http://localhost:5173",
         "https://verifychain-backend.onrender.com",
         "https://*.vercel.app",
-        "https://verifychain-platform-3723u03fk-ms-projects-d438349c.vercel.app"  # ✅ NO /login
+        "https://verifychain-platform.vercel.app",  # ✅ ADD THIS - Your actual URL
+        "https://verifychain-platform-3723u03fk-ms-projects-d438349c.vercel.app"  # Old one
     ],
     allow_credentials=True,
     allow_methods=["*"],

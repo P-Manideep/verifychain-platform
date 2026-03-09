@@ -31,14 +31,20 @@ app = FastAPI(
 )
 
 # CORS middleware
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://verifychain-backend.onrender.com",
+        "https://*.vercel.app",
+        "https://verifychain-platform-3723u03fk-ms-projects-d438349c.vercel.app"  # ✅ NO /login
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # Import blockchain manager
 from .core.blockchain_manager import blockchain_manager
 

@@ -1,33 +1,38 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { authAPI } from '../services/api';
 import toast from 'react-hot-toast';
 
-const NewLogin: React.FC = () => {
+const NewRegister: React.FC = () => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!username || !password) {
+    if (!username || !email || !password) {
       toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters');
       return;
     }
 
     setLoading(true);
     try {
-      await login(username, password);
-      toast.success('Welcome back! 🎉');
-      navigate('/dashboard');
-    } catch (error) {
-      // Error handled in context
+      await authAPI.register({ username, email, password });
+      toast.success('Account created! Please login.');
+      navigate('/login');
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -154,8 +159,10 @@ const NewLogin: React.FC = () => {
                   transform: 'rotate(45deg)'
                 }}>
                   <svg style={{ transform: 'rotate(-45deg)' }} width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <line x1="19" y1="8" x2="19" y2="14"/>
+                    <line x1="22" y1="11" x2="16" y2="11"/>
                   </svg>
                 </div>
                 {/* Pulse Ring */}
@@ -180,14 +187,14 @@ const NewLogin: React.FC = () => {
                 marginBottom: '8px',
                 letterSpacing: '-0.5px'
               }}>
-                VerifyChain
+                Create Account
               </h1>
               <p style={{
                 color: '#9ca3af',
                 fontSize: '15px',
                 fontWeight: '500'
               }}>
-                Enterprise Blockchain Platform
+                Join VerifyChain Platform
               </p>
             </div>
 
@@ -214,13 +221,52 @@ const NewLogin: React.FC = () => {
                     onChange={(e) => setUsername(e.target.value)}
                     onFocus={() => setFocusedField('username')}
                     onBlur={() => setFocusedField(null)}
-                    placeholder="Enter your username"
+                    placeholder="Choose a username"
                     className="input-glow"
                     style={{
                       width: '100%',
                       padding: '16px 20px',
                       background: 'rgba(31, 41, 55, 0.5)',
                       border: `2px solid ${focusedField === 'username' ? '#3b82f6' : 'rgba(255, 255, 255, 0.1)'}`,
+                      borderRadius: '12px',
+                      color: '#fff',
+                      fontSize: '15px',
+                      outline: 'none',
+                      transition: 'all 0.3s',
+                      fontWeight: '500'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Email */}
+              <div style={{ marginBottom: '24px' }}>
+                <label style={{
+                  display: 'block',
+                  color: focusedField === 'email' ? '#3b82f6' : '#e5e7eb',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  marginBottom: '10px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  transition: 'color 0.3s'
+                }}>
+                  Email
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onFocus={() => setFocusedField('email')}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="your@email.com"
+                    className="input-glow"
+                    style={{
+                      width: '100%',
+                      padding: '16px 20px',
+                      background: 'rgba(31, 41, 55, 0.5)',
+                      border: `2px solid ${focusedField === 'email' ? '#3b82f6' : 'rgba(255, 255, 255, 0.1)'}`,
                       borderRadius: '12px',
                       color: '#fff',
                       fontSize: '15px',
@@ -253,7 +299,7 @@ const NewLogin: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     onFocus={() => setFocusedField('password')}
                     onBlur={() => setFocusedField(null)}
-                    placeholder="Enter your password"
+                    placeholder="At least 6 characters"
                     className="input-glow"
                     style={{
                       width: '100%',
@@ -326,9 +372,9 @@ const NewLogin: React.FC = () => {
                       display: 'inline-block',
                       animation: 'spin 0.6s linear infinite'
                     }}></span>
-                    Signing in...
+                    Creating Account...
                   </span>
-                ) : 'Sign in'}
+                ) : 'Create Account'}
               </button>
             </form>
 
@@ -344,16 +390,16 @@ const NewLogin: React.FC = () => {
                 fontSize: '14px',
                 fontWeight: '500'
               }}>
-                Don't have an account?{' '}
+                Already have an account?{' '}
                 <span 
-                  onClick={() => navigate('/register')}
+                  onClick={() => navigate('/login')}
                   style={{
                     color: '#3b82f6',
                     cursor: 'pointer',
                     fontWeight: '600'
                   }}
                 >
-                  Sign up
+                  Sign in
                 </span>
               </p>
             </div>
@@ -372,7 +418,7 @@ const NewLogin: React.FC = () => {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
-              256-bit Encrypted Connection
+              Your data is secure
             </div>
           </div>
         </div>
@@ -381,4 +427,4 @@ const NewLogin: React.FC = () => {
   );
 };
 
-export default NewLogin;
+export default NewRegister;

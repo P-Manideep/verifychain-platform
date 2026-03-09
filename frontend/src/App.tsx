@@ -5,6 +5,7 @@ import { ThemeProvider } from './components/common/ThemeProvider';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import NewLogin from './pages/NewLogin';
 import NewDashboard from './pages/NewDashboard';
+import NewRegister from './pages/NewRegister';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
@@ -40,6 +41,7 @@ const App: React.FC = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<NewLogin />} />
+            <Route path="/register" element={<NewRegister />} />
             <Route
               path="/dashboard"
               element={

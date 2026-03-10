@@ -36,16 +36,13 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:5173",
-        "https://verifychain-backend.onrender.com",
-        "https://*.vercel.app",
-        "https://verifychain-platform.vercel.app",  # ✅ ADD THIS - Your actual URL
-        "https://verifychain-platform-3723u03fk-ms-projects-d438349c.vercel.app"  # Old one
+        "https://verifychain-backend.onrender.com"
     ],
+    allow_origin_regex=r"https://.*\.vercel\.app",  # ✅ This allows ALL Vercel URLs!
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
-# Import blockchain manager
+)# Import blockchain manager
 from .core.blockchain_manager import blockchain_manager
 
 # Include routers
